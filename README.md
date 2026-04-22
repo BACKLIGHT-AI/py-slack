@@ -84,12 +84,12 @@ logged on the `backlight_slack.*` logger namespace and never raised.
 
 ## Bot setup
 
-1. Create a Slack app in the Backlight workspace (or reuse the
-   existing "Backlight" app).
+1. Create a Slack app in your workspace (or reuse an existing one —
+   Backlight uses "Jason").
 2. Add the `chat:write` OAuth scope.
 3. Install the app to the workspace — copy the bot token (`xoxb-...`).
 4. Invite the bot to every channel you configure
-   (`/invite @Backlight` in each channel).
+   (`/invite @<bot-name>` in each channel).
 5. Store the token per project (e.g. in GCP Secret Manager).
 
 ## Versioning
