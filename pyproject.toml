@@ -1,10 +1,15 @@
 [project]
 name = "backlight-slack"
-version = "0.2.0"
+version = "0.2.1"
 description = "Slack notification helpers for Backlight customer backends"
 requires-python = ">=3.11"
 dependencies = [
+    # aiohttp is required by `slack_sdk.web.async_client.AsyncWebClient`
+    # at call time — without it, every post fails at runtime with
+    # `ModuleNotFoundError: No module named 'aiohttp'`. slack_sdk itself
+    # declares it as optional, so we pin it explicitly.
     "slack_sdk>=3.27.0",
+    "aiohttp>=3.9",
     "pydantic>=2.0",
 ]
 authors = [{ name = "Backlight AI" }]

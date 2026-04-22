@@ -27,7 +27,7 @@ from backlight_slack.blocks import (
 )
 from backlight_slack.config import SlackConfig
 
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 
 __all__ = [
     "SlackConfig",
