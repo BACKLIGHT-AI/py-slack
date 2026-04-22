@@ -30,26 +30,26 @@ class SlackConfig(BaseModel):
             "headers (e.g. 'shad-backend', 'shad-backend-staging')."
         ),
     )
-    webhook_success: str = Field(
-        default="",
-        description="Incoming webhook URL for success notifications.",
-    )
-    webhook_failure: str = Field(
-        default="",
-        description="Incoming webhook URL for failure notifications.",
-    )
     bot_token: str = Field(
         default="",
         description=(
-            "Bot token (xoxb-...) required for `chat.postMessage` Web "
-            "API calls. Needed for threaded incident replies — webhooks "
-            "do not return a message `ts`."
+            "Bot token (xoxb-...) used for every API call. The bot "
+            "must be invited to both success_channel and failure_channel."
         ),
     )
-    channel: str = Field(
+    success_channel: str = Field(
         default="",
         description=(
-            "Target channel for Web API messages (e.g. '#shad-fails'). "
-            "The bot must be invited to this channel."
+            "Channel for success notifications (e.g. '#shad-successes'). "
+            "Leave empty to disable success posts without touching "
+            "`enabled`."
+        ),
+    )
+    failure_channel: str = Field(
+        default="",
+        description=(
+            "Channel for failure notifications and incident messages "
+            "(e.g. '#shad-fails'). Also the target for threaded "
+            "recovery replies."
         ),
     )

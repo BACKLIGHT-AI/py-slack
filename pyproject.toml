@@ -1,6 +1,6 @@
 [project]
 name = "backlight-slack"
-version = "0.1.1"
+version = "0.2.0"
 description = "Slack notification helpers for Backlight customer backends"
 requires-python = ">=3.11"
 dependencies = [
