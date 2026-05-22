@@ -1,16 +1,21 @@
 [project]
 name = "backlight-slack"
-version = "0.2.1"
+version = "0.3.0"
 description = "Slack notification helpers for Backlight customer backends"
 requires-python = ">=3.11"
 dependencies = [
     # aiohttp is required by `slack_sdk.web.async_client.AsyncWebClient`
-    # at call time — without it, every post fails at runtime with
+    # at call time -- without it, every post fails at runtime with
     # `ModuleNotFoundError: No module named 'aiohttp'`. slack_sdk itself
     # declares it as optional, so we pin it explicitly.
     "slack_sdk>=3.27.0",
     "aiohttp>=3.9",
     "pydantic>=2.0",
+    # google-auth: OIDC identity-token minting for the Jason broker transport.
+    # fetch_id_token uses the GCP metadata server on Cloud Run and ADC locally.
+    "google-auth>=2.28",
+    # httpx: async HTTP client for broker POST requests.
+    "httpx>=0.27",
 ]
 authors = [{ name = "Backlight AI" }]
 readme = "README.md"
@@ -22,6 +27,7 @@ dev = [
     "mypy>=1.11",
     "pytest>=7.4",
     "pytest-asyncio>=0.23",
+    "pytest-mock>=3.14",
 ]
 
 [build-system]
@@ -44,6 +50,10 @@ python_version = "3.11"
 
 [[tool.mypy.overrides]]
 module = "slack_sdk.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "google.*"
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]

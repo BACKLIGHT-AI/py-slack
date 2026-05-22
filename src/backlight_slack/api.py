@@ -6,7 +6,12 @@ channel and build the right Block Kit payload for you;
 `post_incident_message` + `post_thread_reply` expose the raw path
 when you need the returned message `ts` for threading.
 
-All helpers are awaitable. Failures are logged and never raised —
+`post_via_broker` is the broker-transport entry point: it extracts the
+:class:`~backlight_slack.config.BrokerConfig` from the supplied
+:class:`~backlight_slack.config.SlackConfig` and delegates to
+:mod:`backlight_slack.broker`.
+
+All helpers are awaitable. Failures are logged and never raised --
 posting to Slack must not break the caller's flow.
 """
 
@@ -78,6 +83,49 @@ async def post_thread_reply(
     await _post(config, config.failure_channel, text, blocks, thread_ts=thread_ts)
 
 
+async def post_via_broker(
+    config: SlackConfig,
+    channel: str,
+    text: str,
+    blocks: list[dict[str, Any]] | None = None,
+    thread_ts: str | None = None,
+) -> str | None:
+    """Post a Slack message via the Jason broker transport.
+
+    Requires ``config.broker`` to be set to a populated
+    :class:`~backlight_slack.config.BrokerConfig`.  When ``config.enabled``
+    is ``False`` or ``config.broker`` is ``None``, returns ``None``
+    immediately (no-op).
+
+    Internally delegates to :func:`backlight_slack.broker.post_via_broker`;
+    this wrapper exists so consumers can use a ``SlackConfig`` as the single
+    config object for both broker and bot-token transports.
+
+    Args:
+        config: Slack config carrying a ``broker`` field.
+        channel: Slack channel name, e.g. ``"#shad-fails"``.
+        text: Plain-text fallback (required by Slack even when ``blocks``
+            are provided).
+        blocks: Optional Block Kit block list.
+        thread_ts: Optional parent message timestamp for thread replies.
+
+    Returns:
+        Slack message ``ts`` on success, ``None`` on any failure or
+        when broker mode is not configured.
+    """
+    if not config.enabled or config.broker is None:
+        return None
+    from backlight_slack.broker import post_via_broker as _broker_post
+
+    return await _broker_post(
+        config.broker,
+        channel=channel,
+        text=text,
+        blocks=blocks,
+        thread_ts=thread_ts,
+    )
+
+
 async def _post(
     config: SlackConfig,
     channel: str,
@@ -85,7 +133,7 @@ async def _post(
     blocks: list[dict[str, Any]],
     thread_ts: str | None = None,
 ) -> str | None:
-    """Shared `chat.postMessage` call — returns message `ts`, or None on error."""
+    """Shared `chat.postMessage` call -- returns message `ts`, or None on error."""
     try:
         from slack_sdk.web.async_client import AsyncWebClient
 
