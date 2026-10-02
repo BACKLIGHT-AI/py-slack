@@ -1,5 +1,14 @@
 # backlight-slack
 
+> [!IMPORTANT]
+> **Moved to [BACKLIGHT-AI/backlight-py-packages](https://github.com/BACKLIGHT-AI/backlight-py-packages/tree/main/packages/py-slack).**
+> This repository is frozen: new changes and releases happen only there. The
+> package is published to the private Artifact Registry index
+> `backlight-py-packages`; install it from that index, not with
+> `git = "https://github.com/BACKLIGHT-AI/py-slack.git"`. Existing git-tag pins keep
+> working until every consumer has moved, after which this repository is
+> archived (backlight-ops#866).
+
 Slack notification helpers shared across Backlight customer backends
 (SHAD, BagelBoys, HIRSadvies, Mave-Global).
 
